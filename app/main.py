@@ -38,7 +38,7 @@ def main(step: StepArgs):
     execution_time = timeit.default_timer() - start_time
 
     # Handle both single object and array of objects
-    if isinstaance(data, dict):
+    if isinstance(data, dict):
         records = [data]
         print(f"Read 1 JSON object in {execution_time:.1f} seconds.")
     elif isinstance(data, list):
