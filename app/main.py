@@ -2,6 +2,7 @@ import sys
 import os
 import timeit
 import requests
+from datetime import datetime
 from steputil import StepArgs, StepArgsBuilder
 
 # Import auth module from same directory
@@ -47,6 +48,13 @@ def main(step: StepArgs):
     else:
         raise ValueError(f"Unexpected JSON data type: {type(data)}")
 
+    # Add timestamp to each record if timestampFormat is specified
+    timestamp_format = step.config.timestampFormat
+    if timestamp_format:
+        current_timestamp = datetime.now().strftime(timestamp_format)
+        for record in records:
+            record['timestamp'] = current_timestamp
+
     # store to output file
     step.output.writeJsons(records)
 
@@ -76,6 +84,7 @@ if __name__ == "__main__":
          .config("useGoogleToken", optional=True)
          .config("scopes", optional=True)
          .config("headers", optional=True)
+         .config("timestampFormat", optional=True, default="%Y-%m-%d %H:%M:%S")
          .validate(validate_config)
          .build()
          )
